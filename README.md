@@ -1,31 +1,33 @@
 # SD-Shop — Bot Discord
 
-Bot Discord en JavaScript avec discord.js v14 : message de bienvenue, tickets avec choix et lien PayPal, transcription à la fermeture, et salons vocaux BDA temporaires.
+Bot Discord en JavaScript avec discord.js v14 : bienvenue avec bannière et avatar, tickets PayPal avec transcription, et salons vocaux BDA temporaires.
 
 ## Prérequis
 - Node.js 20 ou plus récent
 - Une application et un bot créés sur le [Discord Developer Portal](https://discord.com/developers/applications)
 
-## Installation
-```bash
-git clone https://github.com/Zelimkhan-dev/sd-shop-discord-bot.git
-cd sd-shop-discord-bot
-npm install
-cp .env.example .env
-```
-Complétez `.env` avec les IDs et paramètres de votre serveur. Ne partagez jamais le token du bot.
+## Installation sous Windows
+1. Télécharge ou décompresse le projet, puis ouvre le dossier `sd-shop-discord-bot-main`.
+2. Ouvre un terminal dans ce dossier et lance `npm install`.
+3. Copie `.env.example` vers `.env`, puis complète les identifiants.
+4. Mets ta bannière dans le dossier principal sous le nom **`banniere.png`**, ou configure `WELCOME_BANNER_URL` avec un lien d’image accessible.
+5. Lance `npm start`.
 
-## Configuration Discord
-Dans le Developer Portal, activez les intents privilégiés **Server Members Intent** et **Message Content Intent**. Invitez le bot avec les permissions de gérer les salons, voir les salons, envoyer des messages, lire l’historique, joindre des fichiers, se connecter et déplacer des membres. Le rôle du bot doit être suffisamment élevé.
+Ne partage jamais le token du bot. Active dans le Developer Portal les intents **Server Members Intent** et **Message Content Intent**. Le rôle du bot doit être suffisamment haut et avoir accès à la gestion des salons, messages, historique, fichiers et vocaux.
 
-Configurez dans `.env` le token, `CLIENT_ID`, `GUILD_ID`, les salons de bienvenue, panneau, transcriptions, la bannière, le lien PayPal, la catégorie de tickets et le rôle staff. `TICKET_CATEGORY_ID` sert de catégorie par défaut; des catégories distinctes par type sont facultatives. `BDA_WAITING_VOICE_ID` indique le vocal d’attente et `BDA_CATEGORY_ID` la catégorie facultative des vocaux temporaires.
+## Commandes slash
+Les commandes sont rangées dans `src/commands/`, et non dans `src/index.js` :
+- `/ticket-panel` — publie le panneau dans `TICKET_PANEL_CHANNEL_ID` (ou dans le salon courant si l’ID est absent).
+- `/bda-setup` — affiche la configuration vocale. Les salons BDA temporaires sont créés automatiquement quand un membre rejoint le vocal d’attente.
 
-## Démarrage et utilisation
+Elles sont enregistrées automatiquement au démarrage sur le serveur `GUILD_ID`.
+
+## Tickets et transcriptions
+Les membres choisissent Achat, Commande ou Autre demande. Un salon privé est créé avec le lien PayPal et le bouton de fermeture. À la fermeture, un fichier texte est envoyé dans `TICKET_LOG_CHANNEL_ID`, puis le salon est supprimé. Les rôles du staff sont indiqués dans `STAFF_ROLE_ID`, séparés par des virgules si besoin.
+
+## Configuration
+Voir `.env.example`. Les catégories `TICKET_CATEGORY_ACHAT_ID`, `TICKET_CATEGORY_COMMANDE_ID` et `TICKET_CATEGORY_AUTRE_ID` sont facultatives et retombent sur `TICKET_CATEGORY_ID`. `BDA_WAITING_VOICE_ID` correspond au vocal d’attente; `BDA_CATEGORY_ID` est facultatif.
+
 ```bash
 npm start
 ```
-Au démarrage, les commandes `/ticket-panel` et `/bda-setup` sont enregistrées sur le serveur configuré. Un administrateur exécute `/ticket-panel` pour publier le panneau. Les membres choisissent Achat, Commande ou Autre demande; le bot crée un salon privé avec le lien PayPal et un bouton de fermeture. La fermeture envoie une transcription texte au salon configuré puis supprime le ticket.
-
-Quand un membre rejoint le vocal d’attente, un vocal privé « BDA + nom » est créé et il y est déplacé. Le vocal temporaire est supprimé quand il est vide.
-
-Hébergez le processus en continu pour que le bot reste actif. Activez le mode développeur Discord pour copier les identifiants des salons, catégories et rôles.
